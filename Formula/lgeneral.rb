@@ -4,7 +4,7 @@ class Lgeneral < Formula
   url "https://downloads.sourceforge.net/lgeneral/lgeneral/lgeneral-1.4.4.tar.gz"
   sha256 "0a26b495716cdcab63b49a294ba31649bc0abe74ce0df48276e52f4a6f323a95"
   license "GPL-2.0-or-later"
-
+  revision 1
   bottle do
     rebuild 1
     sha256 arm64_ventura:  "6814c4921c62261436537a16b3d945863fd8afa2e3f9702e1fe2b15d98ce9cc4"
@@ -16,10 +16,12 @@ class Lgeneral < Formula
     sha256 x86_64_linux:   "eefab1384276b2406cbdb286bfc730b3d434112f2d5ea8be6c3edb451d34f2e9"
   end
 
+  # setting deprecated, because brew audit fails build because or deprecated sdl_mixer
+  deprecate! date: "2023-02-24", because: :does_not_build
+
   depends_on "gettext"
   depends_on "sdl12-compat"
-  depends_on "sdl2"
-  depends_on "sdl2_mixer"
+  depends_on "sdl_mixer"
 
   def install
     # Applied in community , to remove in next release
@@ -53,5 +55,8 @@ class Lgeneral < Formula
     end
     sleep 3
     Process.kill "TERM", pid
+
+    text = "Compiled without sound and music"
+    assert !text.match(shell_output("#{bin}/lgeneral --version 2>&1"))
   end
 end
